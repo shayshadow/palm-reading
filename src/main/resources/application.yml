@@ -1,0 +1,32 @@
+spring:
+  profiles:
+    active: local
+
+  application:
+    name: palm-reading
+#  ai:
+#    vertex:
+#      enabled: true
+#      project-id: ${GCP_PROJECT_ID}
+#      location: us-east1
+#
+#      gemini:
+#        chat:
+#          model: gemini-1.5-flash   # ??/???
+#          options:
+#            temperature: 0.8
+#            top-p: 0.9
+
+
+  ai:
+    vertex:
+      enabled: false   # local
+
+# ?? ??? ?? ?? ?? (??? ??? ?? ??)
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  # ??? ?? ?? ?? (?? 8080)
+server:
+  port: 8080
