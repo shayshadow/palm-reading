@@ -1011,6 +1011,81 @@
                         traits: ["Clear purpose", "Success through merit", "Strong determination"]
                     }
                 }
+            const dataUrlToBlob = async (dataUrl) => {
+                const res = await fetch(dataUrl);
+                return await res.blob();
+            };
+
+            const analyzePalm = async () => {
+                if (!image) return;
+
+                setIsAnalyzing(true);
+                setResult(null);
+
+                try {
+                    // 1) image(DataURL) -> Blob
+                    const blob = await dataUrlToBlob(image);
+
+                    // 2) multipart 폼 구성 (필드명 "image"는 컨트롤러 @RequestPart("image")와 일치해야 함)
+                    const form = new FormData();
+                    form.append("image", blob, `palm-${Date.now()}.jpg`);
+
+                    // 3) 백엔드 호출
+                    const resp = await fetch("http://localhost:8080/api/palm/analyze", {
+                        method: "POST",
+                        body: form
+                    });
+
+                    if (!resp.ok) {
+                        const text = await resp.text();
+                        throw new Error(`API error ${resp.status}: ${text}`);
+                    }
+
+                    // 4) 여기서 json이 정의됨
+                    const json = await resp.json();
+
+                    // 5) 백엔드 JSON -> UI용 형태로 매핑
+                    const readings = {
+                        lifeLine: {
+                            title: "Life Line",
+                            description: json.lines.lifeLine.description,
+                            traits: json.lines.lifeLine.traits,
+                            icon: "✨"
+                        },
+                        heartLine: {
+                            title: "Heart Line",
+                            description: json.lines.heartLine.description,
+                            traits: json.lines.heartLine.traits,
+                            icon: "💫"
+                        },
+                        headLine: {
+                            title: "Head Line",
+                            description: json.lines.headLine.description,
+                            traits: json.lines.headLine.traits,
+                            icon: "🌙"
+                        },
+                        fateLine: {
+                            title: "Fate Line",
+                            description: json.lines.fateLine.description,
+                            traits: json.lines.fateLine.traits,
+                            icon: "⭐"
+                        }
+                    };
+
+                    setResult(readings);
+                } catch (e) {
+                    console.error(e);
+                    alert(e.message);
+                } finally {
+                    setIsAnalyzing(false); // ✅ 무조건 로딩 해제
+                }
+            };
+
+            const reset = () => {
+                setImage(null);
+                setResult(null);
+                setIsAnalyzing(false);
+                stopCamera();
             };
             
             analysisContext = buildAnalysisContext(mockData);
