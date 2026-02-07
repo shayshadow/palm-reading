@@ -1,0 +1,31 @@
+spring:
+  profiles:
+    active: local
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/${OUR_DB}
+    username: ${OUR_NAME}
+    password: ${OUR_PW}
+    driver-class-name: org.postgresql.Driver
+
+  application:
+    name: palm-reading
+
+  ai:
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY}
+        chat:
+          options:
+            model: gemini-flash-latest
+            temperature: 0.7
+            # JSON 강제하면 파싱 지옥 줄어듦
+            response-mime-type: application/json
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+server:
+  port: 8080
