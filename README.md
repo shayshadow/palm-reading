@@ -1,13 +1,13 @@
-# 🔮 WizPalm: Unveil Thy Destiny
+# 🔮 Palmystic: Unveil Thy Destiny
 
 > *"The stars incline, but do not bind.  
 > Thy future is etched upon the very rivers of thy palm."*
 
-**WizPalm** is a mystical fortune-telling platform that bridges **ancient palmistry** with **cutting-edge artificial intelligence**.  
-By leveraging the visual intelligence of **Google Gemini (VLM)** and the orchestration power of **Spring AI**, WizPalm analyzes the intricate lines of your palm to provide deep insights and a **1:1 consultation with the Archmage of the Eastern Heavens**.
+**Palmystic** is a mystical fortune-telling platform that bridges **ancient palmistry** with **cutting-edge artificial intelligence**.  
+By leveraging the visual intelligence of **Google Gemini (VLM)** and the orchestration power of **Spring AI**, Palmystic analyzes the intricate lines of your palm to provide deep insights and a **1:1 consultation with the Archmage of the Eastern Heavens**.
 
 ---
-## 👥 Team WizPalm
+## 👥 Team Palmystic
 	
   ```
   •	Backend Architect: [Eunse]
@@ -67,7 +67,7 @@ The vision model detects and evaluates the four major palm lines:
 
 ### 🧙‍♂️ 1:1 Consultation with the Archmage
 
-Unlike generic chatbots, WizPalm delivers a **true 1:1 consultation**:
+Unlike generic chatbots, Palmystic delivers a **true 1:1 consultation**:
 
 - Palm traits extracted by the VLM are injected as **background context**
 - The Archmage cites concrete evidence during dialogue  
@@ -90,7 +90,7 @@ Each user receives a personalized **Destiny Profile**, including:
 
 ## 🪐 The Magic of Gemini (AI Strategy)
 
-WizPalm implements a **RAG (Retrieval-Augmented Generation) Lite** architecture:
+Palmystic implements a **RAG (Retrieval-Augmented Generation) Lite** architecture:
 
 1. **Visual Extraction**  
    Palm images are converted into a structured **JSON schema** of mystical traits.
@@ -122,7 +122,7 @@ npm start
 
 ## 📜 Epilogue
 
-In the world of WizPalm, we are more than developers — we are digital alchemists.
+In the world of Palmystic, we are more than developers — we are digital alchemists.
 Our hope is to offer users a moment of reflection, a touch of wonder, and a clearer view of the path ahead.
 
 “The universe is contained within the palm of thy hand.”
