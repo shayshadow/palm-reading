@@ -29,12 +29,18 @@ spring:
             options:
               model: gemini-embedding-001
 
+
+    model:
+      embedding:
+        text: none
+
     # ✅ pgvector는 vectorstore 아래!
     vectorstore:
       pgvector:
         initialize-schema: true
         index-type: HNSW
         distance-type: COSINE_DISTANCE
+        dimensions: 768
 
   servlet:
     multipart:
