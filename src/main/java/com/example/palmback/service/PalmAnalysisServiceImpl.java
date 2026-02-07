@@ -107,6 +107,13 @@ public class PalmAnalysisServiceImpl implements PalmAnalysisService {
                                                                                                 "meaning": "string",
                                                                                                 "confidence": "double from 0.0 to 1.0"
                                                                                               }
+                                                                                              
+                                                                                              [STRICT RULE: VARIETY]
+                                                                                              - NEVER start with "Behold, seeker" every time.\s
+                                                                                              - Vary your opening based on the dominant line.
+                                                                                              - If the Life Line is strong, start with: "I feel a thundering heartbeat..."
+                                                                                              - If the Fate Line is weak, start with: "The mist is thick upon thy path..."
+                                                                                              - Make the summary feel like you are reacting to their specific data in real-time.
                     
                     
                     """.formatted(handHint);

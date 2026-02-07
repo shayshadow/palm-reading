@@ -365,10 +365,30 @@
         document.getElementById('analyzeBtn').onclick = runAnalysis; // Ensure binding
     }
 
+    function dataURLtoBlob(dataurl) {
+        var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+        while(n--){
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new Blob([u8arr], {type:mime});
+    }
+
     async function runAnalysis() {
-        if (!selectedImg) return;
+        if (!selectedImg) {
+            alert("Please offer thy palm first.");
+            return;
+        }
+
+        const gender = document.getElementById('genderSelect').value;
+        if (gender === "none") {
+            alert("Please identify thy path (Select Gender).");
+            return;
+        }
+
         const btn = document.getElementById('analyzeBtn');
-        btn.disabled = true; btn.innerText = "Consulting the Heavens...";
+        btn.disabled = true;
+        btn.innerText = "Consulting the Heavens...";
 
         document.getElementById('resultArea').style.display = 'block';
         document.getElementById('loadingView').style.display = 'block';
@@ -377,13 +397,24 @@
         document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
 
         try {
-            const blob = await (await fetch(selectedImg)).blob();
-            const formData = new FormData();
-            formData.append("palm", blob, "palm.jpg");
-            formData.append("gender", document.getElementById('genderSelect').value);
 
-            const res = await fetch(`${API_BASE}/analyze`, { method: "POST", body: formData });
-            if (!res.ok) throw new Error("Network Error");
+            const blob = dataURLtoBlob(selectedImg);
+            const formData = new FormData();
+
+            formData.append("palm", blob, "palm.jpg");
+            formData.append("gender", gender);
+
+            console.log("Sending ritual to the altar...", formData.get("palm"));
+
+            const res = await fetch(`${API_BASE}/analyze`, {
+                method: "POST",
+                body: formData
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(errorData.message || "Celestial Interruption");
+            }
 
             const data = await res.json();
             document.getElementById('loadingView').style.display = 'none';
@@ -394,16 +425,17 @@
                 document.getElementById('reportView').style.display = 'block';
                 document.getElementById('chatbotArea').style.display = 'block';
             } else {
-                showHandError("The lines are tangled. Ensure thy palm is clear and brightly lit.");
+                showHandError("The Oracle cannot discern these lines. (Check lighting or orientation)");
             }
         } catch (e) {
+            console.error("The Spell Failed:", e);
             document.getElementById('loadingView').style.display = 'none';
-            showHandError("The magical connection was severed!");
+            showHandError(`The magical connection was severed: ${e.message}`);
         } finally {
-            btn.disabled = false; btn.innerText = "Invoke the Oracle";
+            btn.disabled = false;
+            btn.innerText = "Invoke the Oracle";
         }
     }
-
     function showHandError(msg) {
         const errorView = document.getElementById('errorView');
         errorView.style.display = 'block';
