@@ -24,7 +24,7 @@ spring:
   ai:
     google:
       genai:
-        api-key: ${GEMINI_API_KEY}
+        api-key: AIzaSyBHLsMwOoPTLJSN8a3xYFMJJXV7Hnchqg8
 #        embedding:
 #          api-key: ${GEMINI_API_KEY}        # ⭐ 이게 핵심 (Embedding도 Developer API로)
 #          text:
