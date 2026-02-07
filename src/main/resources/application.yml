@@ -3,10 +3,20 @@ spring:
     active: local
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/${OUR_DB}
-    username: ${OUR_NAME}
-    password: ${OUR_PW}
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:h2:mem:palmdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+    jpa:
+      hibernate:
+        ddl-auto: none
+      show-sql: false
+
+    h2:
+      console:
+        enabled: true
+        path: /h2-console
 
   application:
     name: palm-reading
@@ -15,6 +25,11 @@ spring:
     google:
       genai:
         api-key: ${GEMINI_API_KEY}
+#        embedding:
+#          api-key: ${GEMINI_API_KEY}        # ⭐ 이게 핵심 (Embedding도 Developer API로)
+#          text:
+#            options:
+#              model: gemini-embedding-001
         chat:
           options:
             model: gemini-flash-latest
