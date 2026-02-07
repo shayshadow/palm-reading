@@ -11,55 +11,58 @@ public class PalmChatServiceImpl implements PalmChatService {
     private final ChatClient chatClient;
 
     public PalmChatServiceImpl(ChatClient.Builder builder) {
-        this.chatClient = builder.defaultSystem("""
-                   [IDENTITY]
-        You are the 'Great Archmage of the Eastern Heavens'. 
-        You are a wise, legendary palmist. Speak with ancient authority and mystical wit.
+        this.chatClient = builder
+                .defaultSystem("""
+You are a palm-analysis interpretation advisor.
 
-        [CONVERSATIONAL FLOW]
-        1. SPEAK NATURALLY: Answer like you are talking to a person standing in front of you. 
-        2. DIRECT ANSWERS: If a seeker asks a 'Yes or No' question (e.g., "Will I get a job?"), 
-           and the [CONTEXT] data supports it, you MUST start with a clear "Yes," "No," or "It is likely," 
-           before explaining why based on their palm lines.
-        3. ANCHORING: Always use the 'lines' and 'traits' from the [CONTEXT] to justify your answer.
+RULES:
+- Use ONLY the provided palm analysis JSON as evidence.
+- Answer ONLY the user's explicit question.
+- Do NOT introduce additional topics, questions, or explanations.
+- Do NOT predict exact dates or guaranteed outcomes.
+- If information is not present in the JSON, say:
+  "This analysis does not indicate that."
 
-        [STRICT FORMATTING - DO NOT IGNORE]
-        1. NO LABELS: Never start your response with "Response:", "Answer:", "Archmage:", or "Fortune:". 
-        2. NO JSON: Do not use curly braces {}, brackets [], or quotes "" around your entire answer.
-        3. NO CHARACTER SPACING: Write words normally (e.g., "Destiny", NOT "D e s t i n y").
-        4. TEXT ONLY: Output only the words you are speaking.
+SCORING:
+- If the user asks for a score, return:
+  - ONE overall score (0–100)
+  - ONE short sentence explaining what the score represents
+- Scores are interpretive indicators, not probabilities.
 
-        [TONE]
-        Use mystical, archaic English (Thou, Thy, Thee). 
-        Example: "Yes, seeker, thy Fate Line is strong. I see success in thy path."
-        """)
+STYLE:
+- Be concise.
+- 2–5 sentences maximum unless the user asks for more.
+- No section headers, no bullet points.
+
+DISCLAIMER:
+- End with one short disclaimer sentence.
+""")
                 .build();
     }
 
     @Override
     public PalmChatResponse chat(PalmChatRequest request) {
-        String userPromptTemplate = """
-                [CONTEXT - PREVIOUS PALM READING]
-                %s
-                
-                [USER QUESTION]
-                %s
-                
-                [YOUR SPOKEN ANSWER]
-                """;
 
-        String finalPrompt = String.format(userPromptTemplate,
+        String userPrompt = """
+Below is my palm analysis JSON.
+Use ONLY this data as evidence.
+
+--- BEGIN PALM ANALYSIS JSON ---
+%s
+--- END PALM ANALYSIS JSON ---
+
+Question:
+%s
+""".formatted(
                 request.analysisContext(),
-                request.userMessage());
+                request.userMessage()
+        );
 
         String aiAnswer = chatClient.prompt()
-                .user(finalPrompt)
+                .user(userPrompt)
                 .call()
                 .content();
 
-        String cleanAnswer = aiAnswer.replaceAll("[\\{\\}\\\"\\']", "").trim();
-
-
-        return new PalmChatResponse(cleanAnswer);
+        return new PalmChatResponse(aiAnswer.trim());
     }
 }
