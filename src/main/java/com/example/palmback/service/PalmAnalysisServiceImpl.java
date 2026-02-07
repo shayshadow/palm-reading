@@ -21,14 +21,12 @@ import java.util.stream.Collectors;
 public class PalmAnalysisServiceImpl implements PalmAnalysisService {
 
     private final ChatClient chatClient;
-    private final VectorStore vectorStore;
 
-    public PalmAnalysisServiceImpl(ChatClient.Builder builder, VectorStore vectorStore) {
+    public PalmAnalysisServiceImpl(ChatClient.Builder builder) {
         this.chatClient = builder
                 .defaultSystem("You are 'The Digital Mystic', a wise palmist. " +
                         "Analyze the user's palm image and provide a mystical yet structured reading.")
                 .build();
-        this.vectorStore = vectorStore;
     }
 
     @Override
@@ -36,33 +34,31 @@ public class PalmAnalysisServiceImpl implements PalmAnalysisService {
         try {
             var imageResource = new InputStreamResource(image.getInputStream());
 
-            // 1단계: VLM을 통한 이미지 분석 및 특징 추출
-            String visualTraits = chatClient.prompt()
-                    .user(u -> u.text("Describe the Life Line, Heart Line, and Head Line from this palm.")
-                            .media(MimeTypeUtils.IMAGE_JPEG, imageResource))
-                    .call()
-                    .content();
+            String promptText = """
+            You are an expert Palmist. Perform a step-by-step analysis on this palm image.
+            
+            [Step 1: Visual Analysis]
+            Identify and describe the following visual traits strictly from the image:
+            - Life Line: (Length, depth, breaks, curvature)
+            - Head Line: (Length, slope, origin)
+            - Heart Line: (Curve, branches, islands)
+            - Mounts: (Identify which mounts are prominent or padded)
+            
+            [Step 2: Destiny Reading]
+            Based on the traits identified in Step 1, apply ancient palmistry knowledge to predict the user's destiny.
+            
+            [Output Requirement]
+            Ignore the background. Focus only on the palm.
+            Provide the final result in the requested JSON format.
+            """;
 
-            // 2단계: RAG - 추출된 특징으로 고대 문헌 검색
-            SearchRequest request = SearchRequest.builder()
-                    .query(visualTraits)
-                    .topK(2)
-                    .build();
-
-            List<Document> similarDocs = vectorStore.similaritySearch(request);
-
-            String context = similarDocs.stream()
-                    .map(Document::getText)
-                    .collect(Collectors.joining("\n"));
 
             // 3단계: LLM - 특징 + 문헌 지식을 결합하여 구조화된 JSON 응답 생성
             return chatClient.prompt()
-                    .user(u -> u.text("Based on the visual traits: {traits} and ancient wisdom: {context}, " +
-                                    "generate a detailed palmistry report in JSON.")
-                            .param("traits", visualTraits)
-                            .param("context", context))
+                    .user(u -> u.text(promptText)
+                            .media(MimeTypeUtils.IMAGE_JPEG, imageResource))
                     .call()
-                    .entity(PalmAnalysisResponse.class); // DTO 구조로 자동 매핑!
+                    .entity(PalmAnalysisResponse.class);// DTO 구조로 자동 매핑!
 
         } catch (IOException e) {
             throw new RuntimeException("Magic failed: Image processing error", e);

@@ -3,7 +3,6 @@ package com.example.palmback.dto;
 import java.util.List;
 
 public record PalmAnalysisResponse(
-        String requestId,
         String mysticSummary,
         Lines lines,
         DestinyMatch destinyMatch

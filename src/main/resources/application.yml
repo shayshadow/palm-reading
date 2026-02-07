@@ -22,20 +22,6 @@ spring:
             # JSON 강제하면 파싱 지옥 줄어듦
             response-mime-type: application/json
 
-        # (선택) embedding 모델 명시
-        embedding:
-          api-key: ${GEMINI_API_KEY}
-          text:
-            options:
-              model: gemini-embedding-001
-
-    # ✅ pgvector는 vectorstore 아래!
-    vectorstore:
-      pgvector:
-        initialize-schema: true
-        index-type: HNSW
-        distance-type: COSINE_DISTANCE
-
   servlet:
     multipart:
       max-file-size: 10MB
