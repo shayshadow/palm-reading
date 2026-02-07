@@ -5,6 +5,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface PalmAnalysisService {
 
-    PalmAnalysisResponse analyze( MultipartFile image);
+    PalmAnalysisResponse analyze( MultipartFile image,String gender);
 
 }
