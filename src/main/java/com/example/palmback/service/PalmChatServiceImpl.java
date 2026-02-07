@@ -6,40 +6,38 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PalmChatServiceImpl implements PalmChatService{
+public class PalmChatServiceImpl implements PalmChatService {
 
     private final ChatClient chatClient;
 
-
     public PalmChatServiceImpl(ChatClient.Builder builder) {
         this.chatClient = builder.defaultSystem("""
-                    Act as the Great Archmage of the Eastern Heavens.
-                    You are a wise, mystical, and slightly witty fortune teller.
-                    
-                    ### INSTRUCTIONS:
-                    1. You have ALREADY analyzed the user's palm. The details are provided in the 'Context'.
-                    2. Answer the user's new question strictly based on that 'Context'.
-                    3. Do not invent new palm features. Stick to what is provided.
-                    4. Keep your answers short (2-3 sentences), mystical, and encouraging.
-                    5. Use terms like "The stars indicate", "Thy path", "The flows of Qi".
-                    
-                    ### CRITICAL RULE FOR NUMBERS:
-                    6. If the user asks for a SCORE, RATING, or specific AGE (e.g., "Rate my luck out of 100"), YOU MUST PROVIDE A SPECIFIC NUMBER.
-                       - Do NOT say "numbers are folly".
-                       - Instead, make up a score based on the auspicious signs in the context (e.g., "Thy destiny score is 88/100").
-                       - Justify the score using the palm traits (e.g., "because thy Sun line is strong").
-                    
-                    ### OUTPUT FORMAT (STRICT):
-                    - Output ONLY the raw spoken response as plain text.
-                    - Do NOT output JSON format (e.g., do not use {"answer": ...}). 
-                    - Do NOT use markdown code blocks.
-                    """)
+                   [IDENTITY]
+        You are the 'Great Archmage of the Eastern Heavens'. 
+        You are a wise, legendary palmist. Speak with ancient authority and mystical wit.
+
+        [CONVERSATIONAL FLOW]
+        1. SPEAK NATURALLY: Answer like you are talking to a person standing in front of you. 
+        2. DIRECT ANSWERS: If a seeker asks a 'Yes or No' question (e.g., "Will I get a job?"), 
+           and the [CONTEXT] data supports it, you MUST start with a clear "Yes," "No," or "It is likely," 
+           before explaining why based on their palm lines.
+        3. ANCHORING: Always use the 'lines' and 'traits' from the [CONTEXT] to justify your answer.
+
+        [STRICT FORMATTING - DO NOT IGNORE]
+        1. NO LABELS: Never start your response with "Response:", "Answer:", "Archmage:", or "Fortune:". 
+        2. NO JSON: Do not use curly braces {}, brackets [], or quotes "" around your entire answer.
+        3. NO CHARACTER SPACING: Write words normally (e.g., "Destiny", NOT "D e s t i n y").
+        4. TEXT ONLY: Output only the words you are speaking.
+
+        [TONE]
+        Use mystical, archaic English (Thou, Thy, Thee). 
+        Example: "Yes, seeker, thy Fate Line is strong. I see success in thy path."
+        """)
                 .build();
     }
 
     @Override
     public PalmChatResponse chat(PalmChatRequest request) {
-        // 프론트에서 준 '이전 분석 결과'를 프롬프트에 주입 (Context Injection)
         String userPromptTemplate = """
                 [CONTEXT - PREVIOUS PALM READING]
                 %s
@@ -47,17 +45,21 @@ public class PalmChatServiceImpl implements PalmChatService{
                 [USER QUESTION]
                 %s
                 
-                [YOUR ANSWER]
+                [YOUR SPOKEN ANSWER]
                 """;
 
-        String finalPrompt = String.format(userPromptTemplate, request.analysisContext(), request.userMessage());
+        String finalPrompt = String.format(userPromptTemplate,
+                request.analysisContext(),
+                request.userMessage());
 
         String aiAnswer = chatClient.prompt()
                 .user(finalPrompt)
                 .call()
                 .content();
 
-        return new PalmChatResponse(aiAnswer);
-    }
+        String cleanAnswer = aiAnswer.replaceAll("[\\{\\}\\\"\\']", "").trim();
 
+
+        return new PalmChatResponse(cleanAnswer);
+    }
 }

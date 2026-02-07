@@ -23,10 +23,11 @@ public class PalmController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public PalmAnalysisResponse analyze(@RequestPart("image") MultipartFile image) {
-        if (image == null || image.isEmpty()) {
+    public PalmAnalysisResponse analyze(@RequestPart(value = "palm", required = false) MultipartFile palm,
+                                        @RequestParam("gender") String gender) {
+        if (palm == null || palm.isEmpty()){
             throw new IllegalArgumentException("image is required");
         }
-        return palmAnalysisService.analyze( image);
+        return palmAnalysisService.analyze(palm,gender);
     }
 }
