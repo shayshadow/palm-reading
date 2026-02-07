@@ -3,447 +3,449 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WizPalm - Unveil Your Destiny</title>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>WizPalm - The Ancient Grimoire</title>
+    <link href="https://fonts.googleapis.com/css2?family=Almendra:ital,wght@0,400;0,700;1,400&family=Cinzel+Decorative:wght@400;700;900&family=MedievalSharp&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap');
-        body { font-family: 'Cinzel', serif; }
+        :root {
+            --gold: #d4af37;
+            --deep-purple: #2e1065;
+            --parchment: #f3e5ab;
+            --blood-red: #7f1d1d;
+            --magic-blue: #38bdf8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Almendra', serif;
+            background: #020617 url('https://www.transparenttextures.com/patterns/black-linen.png');
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #2b1e10;
+            overflow-x: hidden;
+        }
+
+        /* The Main Book Layout */
+        .grimoire {
+            background: #4a3728; /* Leather Binding */
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,0,0,0.5);
+            max-width: 800px;
+            width: 100%;
+            position: relative;
+            border: 4px solid #3a2a1d;
+        }
+
+        .page {
+            background: var(--parchment);
+            background-image: url('https://www.transparenttextures.com/patterns/parchment.png');
+            border-radius: 5px;
+            padding: 40px;
+            box-shadow: inset 0 0 100px rgba(139, 69, 19, 0.2);
+            border: 1px solid rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        /* Decorative Corners */
+        .page::before, .page::after {
+            content: "⚜";
+            position: absolute;
+            font-size: 2em;
+            color: var(--gold);
+            opacity: 0.6;
+        }
+        .page::before { top: 10px; left: 10px; }
+        .page::after { bottom: 10px; right: 10px; }
+
+        h1 {
+            font-family: 'Cinzel Decorative', cursive;
+            text-align: center;
+            color: var(--blood-red);
+            font-size: 3em;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .sub-heading {
+            text-align: center;
+            font-family: 'MedievalSharp', cursive;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            color: #5d4037;
+            border-bottom: 2px double var(--gold);
+            padding-bottom: 10px;
+        }
+
+        /* Input Styling */
+        select, .question-input {
+            font-family: 'MedievalSharp', cursive;
+            background: rgba(255,255,255,0.5);
+            border: 2px solid #8b4513;
+            padding: 12px;
+            border-radius: 5px;
+            color: #3e2723;
+            outline: none;
+        }
+
+        /* Magical Orbs / Buttons */
+        .btn {
+            background: var(--blood-red);
+            color: var(--gold);
+            font-family: 'Cinzel Decorative', cursive;
+            font-weight: bold;
+            text-transform: uppercase;
+            padding: 15px 25px;
+            border: 2px solid var(--gold);
+            border-radius: 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 3px 3px 10px rgba(0,0,0,0.3);
+            margin-top: 15px;
+        }
+
+        .btn:hover {
+            background: #991b1b;
+            transform: translateY(-2px);
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.4);
+        }
+
+        /* Palm Recognition Area */
+        .palm-upload-card {
+            border: 3px double #8b4513;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 450px;
+            background: rgba(139, 69, 19, 0.05);
+        }
+
+        .upload-card-btn {
+            border: 2px dashed #8b4513;
+            padding: 40px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: 0.3s;
+        }
+
+        .upload-card-btn:hover { background: rgba(139, 69, 19, 0.1); }
+
+        canvas, video {
+            width: 100%;
+            max-width: 400px;
+            border: 5px solid #3a2a1d;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            display: none;
+            margin: 15px auto;
+        }
+
+        /* Results Display */
+        .mystic-summary {
+            font-family: 'Almendra', serif;
+            font-style: italic;
+            font-size: 1.4em;
+            text-align: center;
+            padding: 25px;
+            background: url('https://www.transparenttextures.com/patterns/criss-cross.png');
+            border-top: 1px solid var(--gold);
+            border-bottom: 1px solid var(--gold);
+            margin: 20px 0;
+            line-height: 1.5;
+        }
+
+        .lucky-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .lucky-item {
+            background: rgba(212, 175, 55, 0.15);
+            border: 1px solid var(--gold);
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            color: #3e2723;
+        }
+
+        .line-card {
+            border-left: 4px solid var(--blood-red);
+            background: rgba(0,0,0,0.03);
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .line-card strong { font-family: 'Cinzel Decorative'; color: var(--blood-red); }
+
+        /* Chatbot area */
+        .chat-box {
+            height: 300px;
+            background: rgba(0,0,0,0.05);
+            border: 1px solid #8b4513;
+            padding: 15px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+
+        .msg { margin-bottom: 12px; padding: 10px; border-radius: 4px; font-size: 0.95em; }
+        .msg.bot { background: #d1d5db; color: #111827; border-left: 4px solid var(--magic-blue); }
+        .msg.user { background: #4a3728; color: var(--parchment); margin-left: 20%; text-align: right; border-right: 4px solid var(--gold); }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px double var(--gold);
+            border-top-color: var(--blood-red);
+            border-radius: 50%;
+            animation: spin 1.5s infinite linear;
+            margin: 0 auto;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
     </style>
 </head>
 <body>
-    <div id="root"></div>
-    
-    <script type="text/babel">
-        const { useState, useRef, useEffect } = React;
 
-        // Lucide icons as SVG components
-        const Moon = ({ className }) => (
-            <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
-            </svg>
-        );
+<div class="grimoire">
+    <div class="page">
+        <h1>WizPalm</h1>
+        <p class="sub-heading">Unveil the Secrets Written in Flesh</p>
 
-        const Stars = ({ className }) => (
-            <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-            </svg>
-        );
+        <div class="glass-section">
+            <div style="display:flex; justify-content:center; margin-bottom: 25px;">
+                <select id="genderSelect" onchange="updateUI()">
+                    <option value="none" selected disabled>--- Identify Thy Path ---</option>
+                    <option value="female">Female</option>
+                    <option value="male">Male</option>
+                    <option value="others">Other</option>
+                </select>
+            </div>
 
-        const Upload = ({ className }) => (
-            <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="17 8 12 3 7 8"/>
-                <line x1="12" y1="3" x2="12" y2="15"/>
-            </svg>
-        );
+            <div id="palmCard" class="palm-upload-card" style="display:none;">
+                <p id="guideText" style="text-align:center; font-weight:bold; margin-bottom:10px; color:var(--blood-red);"></p>
+                
+                
 
-        const Camera = ({ className }) => (
-            <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                <circle cx="12" cy="13" r="4"/>
-            </svg>
-        );
+                <label for="palmUpload" class="upload-card-btn" id="palmLabel">
+                    <span id="previewIcon" style="font-size:3em; color:var(--gold);">✥</span>
+                    <span id="previewText">Offer Thy Palm to the Lens</span>
+                </label>
+                <input type="file" id="palmUpload" accept="image/*" onchange="handleFile(event)" style="display:none;">
+                <canvas id="palmCanvas"></canvas>
+            </div>
 
-        const Eye = ({ className }) => (
-            <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
-                <circle cx="12" cy="12" r="3"/>
-            </svg>
-        );
+            <div id="uploadBtns" style="display:none; grid-template-columns: 1fr 1fr; gap:10px;">
+                <button class="btn" style="background:#5d4037" onclick="document.getElementById('palmUpload').click()">📜 Input Scroll</button>
+                <button class="btn" style="background:#5d4037" onclick="startCamera()">👁 Scry Live</button>
+            </div>
 
-        const Sparkles = ({ className }) => (
-            <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
-                <path d="M5 3v4"/>
-                <path d="M19 17v4"/>
-                <path d="M3 5h4"/>
-                <path d="M17 19h4"/>
-            </svg>
-        );
+            <video id="video" autoplay playsinline></video>
+            <div id="camControls" style="display:none; text-align:center;">
+                <button class="btn" onclick="capture()">✨ Freeze Destiny</button>
+            </div>
 
-        function WizPalm() {
-          const [gender, setGender] = useState('none');
-          const [selectedImg, setSelectedImg] = useState(null);
-          const [isAnalyzing, setIsAnalyzing] = useState(false);
-          const [results, setResults] = useState(null);
-          const [error, setError] = useState(null);
-          const [isCameraActive, setIsCameraActive] = useState(false);
-          const [chatMessages, setChatMessages] = useState([
-            { role: 'bot', content: 'Thy destiny is laid bare. What dost thou seek to know?' }
-          ]);
-          const [userInput, setUserInput] = useState('');
-          
-          const videoRef = useRef(null);
-          const canvasRef = useRef(null);
-          const streamRef = useRef(null);
-          const fileInputRef = useRef(null);
-          const chatBoxRef = useRef(null);
+            <button class="btn" id="analyzeBtn" style="display:none; width:100%; font-size:1.5em;">Invoke the Oracle</button>
+        </div>
 
-          const API_BASE = "http://localhost:8080/api/palm";
+        <div id="resultArea" style="display:none; margin-top:30px; border-top: 3px double var(--gold); padding-top:20px;">
+            <div id="loadingView" class="status-box" style="text-align:center;">
+                <div class="spinner"></div>
+                <p style="margin-top:15px; font-weight:bold;">Interpreting the celestial ley lines...</p>
+            </div>
 
-          useEffect(() => {
-            if (chatBoxRef.current) {
-              chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+            <div id="errorView" style="display:none; text-align:center; color:var(--blood-red);">
+                <div style="font-size: 3em;">☠</div>
+                <p class="error-msg">The ritual has failed.</p>
+                <button class="btn" onclick="runAnalysis()">Re-cast Spell</button>
+            </div>
+
+            <div id="reportView" style="display:none;">
+                <h2 style="text-align:center; font-family:'Cinzel Decorative'; color:var(--blood-red);">The Oracle's Proclamation</h2>
+                <div id="mysticSummary" class="mystic-summary"></div>
+                
+                <div id="destinyMatch" style="text-align:center; padding:15px; border:1px solid var(--gold); background:rgba(212,175,55,0.05); margin-bottom:20px;"></div>
+                
+                <div id="luckyGrid" class="lucky-grid"></div>
+                <div id="lineList"></div>
+            </div>
+        </div>
+
+        <div id="chatbotArea" style="display:none; margin-top:40px;">
+            <h3 style="text-align:center; font-family:'MedievalSharp'; margin-bottom:10px;">Whisper to the Oracle</h3>
+            <div id="chatBox" class="chat-box">
+                <div class="msg bot">Speak, seeker. The shadows of thy future are long...</div>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="userInput" placeholder="Ask of thy fate..." class="question-input" style="flex:1;">
+                <button class="btn" onclick="sendChat()" style="margin:0; padding:10px 20px;">▶</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- KEEPING ALL ORIGINAL LOGIC ---
+    let selectedImg = null;
+    let stream = null;
+    let ctxText = "";
+    const API_BASE = "http://localhost:8080/api/palm";
+
+    function updateUI() {
+        const g = document.getElementById('genderSelect').value;
+        document.getElementById('palmCard').style.display = 'block';
+        document.getElementById('uploadBtns').style.display = 'grid';
+        document.getElementById('guideText').innerText = g === 'female' ? "◈ Present thy LEFT palm" : (g === 'male' ? "◈ Present thy RIGHT palm" : "◈ Present EITHER palm");
+    }
+
+    async function startCamera() {
+        try {
+            const v = document.getElementById('video');
+            v.style.display = 'block';
+            document.getElementById('camControls').style.display = 'block';
+            document.getElementById('palmCanvas').style.display = 'none';
+            document.getElementById('palmLabel').style.display = 'none';
+            stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+            v.srcObject = stream;
+        } catch (err) { alert("The scrying glass is dark (Camera access denied)."); }
+    }
+
+    function capture() {
+        const v = document.getElementById('video');
+        const c = document.getElementById('palmCanvas');
+        const ctx = c.getContext('2d');
+        c.width = v.videoWidth;
+        c.height = v.videoHeight;
+        ctx.drawImage(v, 0, 0);
+        selectedImg = c.toDataURL('image/jpeg');
+        c.style.display = 'block';
+        v.style.display = 'none';
+        document.getElementById('camControls').style.display = 'none';
+        document.getElementById('palmLabel').style.display = 'flex';
+        if (stream) stream.getTracks().forEach(t => t.stop());
+        finishUploadUI();
+    }
+
+    function handleFile(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            selectedImg = ev.target.result;
+            showPreview(selectedImg);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function showPreview(url) {
+        const c = document.getElementById('palmCanvas');
+        const img = new Image();
+        img.onload = () => {
+            c.width = img.width;
+            c.height = img.height;
+            const ctx = c.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            c.style.display = 'block';
+            finishUploadUI();
+        };
+        img.src = url;
+    }
+
+    function finishUploadUI() {
+        document.getElementById('palmLabel').style.borderColor = "#d4af37";
+        document.getElementById('previewIcon').innerText = "⚖";
+        document.getElementById('previewText').innerText = "The Mark is Bound";
+        document.getElementById('analyzeBtn').style.display = 'block';
+        document.getElementById('analyzeBtn').onclick = runAnalysis; // Ensure binding
+    }
+
+    async function runAnalysis() {
+        if (!selectedImg) return;
+        const btn = document.getElementById('analyzeBtn');
+        btn.disabled = true; btn.innerText = "Consulting the Heavens...";
+
+        document.getElementById('resultArea').style.display = 'block';
+        document.getElementById('loadingView').style.display = 'block';
+        document.getElementById('errorView').style.display = 'none';
+        document.getElementById('reportView').style.display = 'none';
+        document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
+
+        try {
+            const blob = await (await fetch(selectedImg)).blob();
+            const formData = new FormData();
+            formData.append("palm", blob, "palm.jpg");
+            formData.append("gender", document.getElementById('genderSelect').value);
+
+            const res = await fetch(`${API_BASE}/analyze`, { method: "POST", body: formData });
+            if (!res.ok) throw new Error("Network Error");
+
+            const data = await res.json();
+            document.getElementById('loadingView').style.display = 'none';
+
+            if (data.status === "OK" || data.status === "SUCCESS") {
+                ctxText = JSON.stringify(data);
+                renderResults(data);
+                document.getElementById('reportView').style.display = 'block';
+                document.getElementById('chatbotArea').style.display = 'block';
+            } else {
+                showHandError("The lines are tangled. Ensure thy palm is clear and brightly lit.");
             }
-          }, [chatMessages]);
+        } catch (e) {
+            document.getElementById('loadingView').style.display = 'none';
+            showHandError("The magical connection was severed!");
+        } finally {
+            btn.disabled = false; btn.innerText = "Invoke the Oracle";
+        }
+    }
 
-          const startCamera = async () => {
-            try {
-              const stream = await navigator.mediaDevices.getUserMedia({ 
-                video: { facingMode: 'environment' } 
-              });
-              if (videoRef.current) {
-                videoRef.current.srcObject = stream;
-                streamRef.current = stream;
-                setIsCameraActive(true);
-              }
-            } catch (err) {
-              alert("Camera access denied by the fates.");
-            }
-          };
+    function showHandError(msg) {
+        const errorView = document.getElementById('errorView');
+        errorView.style.display = 'block';
+        errorView.querySelector('.error-msg').innerText = msg;
+    }
 
-          const capture = () => {
-            const video = videoRef.current;
-            const canvas = canvasRef.current;
-            if (!video || !canvas) return;
+    function renderResults(data) {
+        document.getElementById('mysticSummary').innerText = `"${data.mysticSummary}"`;
+        document.getElementById('destinyMatch').innerHTML = `
+            <div style="color:var(--blood-red); font-size:1.6em; font-family:'Cinzel Decorative'; font-weight:bold;">${data.destinyMatch.archetype}</div>
+            <p style="color:#5d4037; margin-top:10px; font-style:italic;">${data.destinyMatch.meaning}</p>`;
+        document.getElementById('luckyGrid').innerHTML = `
+            <div class="lucky-item">Hue: ${data.luckyContext.luckyColor}</div>
+            <div class="lucky-item">Digit: ${data.luckyContext.luckyNumber}</div>
+            <div class="lucky-item">Spirit: ${data.luckyContext.powerAnimal}</div>
+            <div class="lucky-item">Ritual: ${data.luckyContext.actionItem}</div>`;
+        document.getElementById('lineList').innerHTML = Object.entries(data.lines).map(([k, v]) => `
+            <div class="line-card"><strong>✦ The ${k.toUpperCase()} Line</strong><p style="font-size:0.95em; color:#3e2723; margin-top:5px;">${v.description}</p></div>`).join('');
+    }
 
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(video, 0, 0);
-
-            const imageData = canvas.toDataURL('image/jpeg');
-            setSelectedImg(imageData);
-            stopCamera();
-          };
-
-          const stopCamera = () => {
-            if (streamRef.current) {
-              streamRef.current.getTracks().forEach(track => track.stop());
-              streamRef.current = null;
-            }
-            setIsCameraActive(false);
-          };
-
-          const handleFileUpload = (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-              setSelectedImg(ev.target.result);
-            };
-            reader.readAsDataURL(file);
-          };
-
-          const runAnalysis = async () => {
-            if (!selectedImg) return;
-            
-            setIsAnalyzing(true);
-            setError(null);
-            setResults(null);
-
-            try {
-              const blob = await (await fetch(selectedImg)).blob();
-              const formData = new FormData();
-              formData.append("palm", blob, "palm.jpg");
-              formData.append("gender", gender);
-
-              const res = await fetch(`${API_BASE}/analyze`, { method: "POST", body: formData });
-              if (!res.ok) throw new Error("Network Error");
-
-              const data = await res.json();
-
-              if (data.status === "OK" || data.status === "SUCCESS") {
-                setResults(data);
-              } else {
-                setError("Unable to identify the palm. The image may be oriented incorrectly or is not identifiable as a palm.");
-              }
-            } catch (e) {
-              setError("The cosmic connection was severed. Check your server or internet.");
-            } finally {
-              setIsAnalyzing(false);
-            }
-          };
-
-          const sendChat = async () => {
-            if (!userInput.trim() || !results) return;
-
-            const newMessage = { role: 'user', content: userInput };
-            setChatMessages(prev => [...prev, newMessage]);
-            setUserInput('');
-
-            try {
-              const res = await fetch(`${API_BASE}/chat`, {
+    async function sendChat() {
+        const input = document.getElementById('userInput');
+        const txt = input.value.trim(); if (!txt) return;
+        addMsg('user', txt); input.value = '';
+        try {
+            const res = await fetch(`${API_BASE}/chat`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                  userMessage: userInput, 
-                  analysisContext: JSON.stringify(results) 
-                })
-              });
-              const data = await res.json();
-              setChatMessages(prev => [...prev, { role: 'bot', content: data.answer }]);
-            } catch (e) {
-              setChatMessages(prev => [...prev, { role: 'bot', content: "The stars are silent..." }]);
-            }
-          };
+                body: JSON.stringify({ userMessage: txt, analysisContext: ctxText })
+            });
+            const data = await res.json();
+            addMsg('bot', data.answer);
+        } catch (e) { addMsg('bot', "The spirits remain silent... try again."); }
+    }
 
-          const handleKeyPress = (e) => {
-            if (e.key === 'Enter') sendChat();
-          };
-
-          return (
-            <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
-              <div className="fixed inset-0 bg-gradient-to-b from-slate-950 via-violet-950 to-black">
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-900/20 via-transparent to-transparent"></div>
-                <div className="absolute inset-0 overflow-hidden">
-                  {[...Array(20)].map((_, i) => (
-                    <div
-                      key={i}
-                      className="absolute w-1 h-1 bg-purple-400/30 rounded-full animate-pulse"
-                      style={{
-                        left: `${Math.random() * 100}%`,
-                        top: `${Math.random() * 100}%`,
-                        animationDelay: `${Math.random() * 3}s`,
-                        animationDuration: `${2 + Math.random() * 3}s`
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="relative max-w-4xl w-full">
-                <div className="bg-gradient-to-br from-indigo-950/80 via-purple-950/80 to-violet-950/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-purple-500/30 overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 via-pink-600/10 to-purple-600/10 animate-pulse pointer-events-none"></div>
-                  
-                  <div className="relative p-8 md:p-12">
-                    <div className="text-center mb-12">
-                      <div className="flex items-center justify-center gap-3 mb-4">
-                        <Moon className="w-8 h-8 text-purple-300 animate-pulse" />
-                        <h1 className="text-5xl md:text-6xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-purple-200 via-pink-200 to-purple-200">
-                          WizPalm
-                        </h1>
-                        <Stars className="w-8 h-8 text-purple-300 animate-pulse" />
-                      </div>
-                      <p className="text-purple-300/80 text-sm tracking-widest">Unveil the Secrets Written Upon Your Hand</p>
-                    </div>
-
-                    <div className="mb-8">
-                      <div className="flex justify-center">
-                        <select
-                          value={gender}
-                          onChange={(e) => setGender(e.target.value)}
-                          className="px-6 py-3 bg-indigo-950/50 border-2 border-purple-500/40 rounded-xl text-purple-100 focus:outline-none focus:border-purple-400 transition-all min-w-[250px] backdrop-blur-sm"
-                        >
-                          <option value="none" disabled>Select Thy Gender</option>
-                          <option value="female">Female</option>
-                          <option value="male">Male</option>
-                          <option value="others">Other</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    {gender !== 'none' && (
-                      <div className="bg-indigo-950/30 border-2 border-purple-500/30 rounded-2xl p-8 mb-8 backdrop-blur-sm">
-                        <p className="text-center text-purple-300 mb-6 text-sm tracking-wide">
-                          {gender === 'female' ? '⟡ Present thy LEFT palm ⟡' : 
-                           gender === 'male' ? '⟡ Present thy RIGHT palm ⟡' : 
-                           '⟡ Present EITHER palm ⟡'}
-                        </p>
-
-                        {!selectedImg && !isCameraActive && (
-                          <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
-                            <button
-                              onClick={() => fileInputRef.current?.click()}
-                              className="flex flex-col items-center gap-3 p-6 bg-purple-900/20 border-2 border-purple-500/40 rounded-xl hover:bg-purple-900/30 hover:border-purple-400/60 transition-all group"
-                            >
-                              <Upload className="w-8 h-8 text-purple-300 group-hover:text-purple-200 transition-colors" />
-                              <span className="text-purple-200 text-sm">Upload Image</span>
-                            </button>
-                            <button
-                              onClick={startCamera}
-                              className="flex flex-col items-center gap-3 p-6 bg-purple-900/20 border-2 border-purple-500/40 rounded-xl hover:bg-purple-900/30 hover:border-purple-400/60 transition-all group"
-                            >
-                              <Camera className="w-8 h-8 text-purple-300 group-hover:text-purple-200 transition-colors" />
-                              <span className="text-purple-200 text-sm">Use Camera</span>
-                            </button>
-                          </div>
-                        )}
-
-                        <input
-                          ref={fileInputRef}
-                          type="file"
-                          accept="image/*"
-                          onChange={handleFileUpload}
-                          className="hidden"
-                        />
-
-                        {isCameraActive && (
-                          <div className="space-y-4">
-                            <video
-                              ref={videoRef}
-                              autoPlay
-                              playsInline
-                              className="w-full max-w-md mx-auto rounded-xl border-2 border-purple-500/50"
-                            />
-                            <button
-                              onClick={capture}
-                              className="w-full max-w-md mx-auto block bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-xl hover:from-purple-500 hover:to-pink-500 transition-all shadow-lg"
-                            >
-                              Capture Image
-                            </button>
-                          </div>
-                        )}
-
-                        {selectedImg && !isCameraActive && (
-                          <div className="space-y-4">
-                            <div className="relative max-w-md mx-auto">
-                              <img
-                                src={selectedImg}
-                                alt="Palm"
-                                className="w-full rounded-xl border-2 border-green-500/50 shadow-lg shadow-green-500/20"
-                              />
-                              <div className="absolute top-2 right-2 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                                Palm Identified
-                              </div>
-                            </div>
-                            <button
-                              onClick={runAnalysis}
-                              disabled={isAnalyzing}
-                              className="w-full max-w-md mx-auto block bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 text-yellow-200 px-8 py-4 rounded-xl font-semibold hover:from-purple-500 hover:via-pink-500 hover:to-purple-500 transition-all shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                            >
-                              {isAnalyzing ? (
-                                <>
-                                  <div className="w-5 h-5 border-2 border-yellow-200 border-t-transparent rounded-full animate-spin"></div>
-                                  Consulting the Stars...
-                                </>
-                              ) : (
-                                <>
-                                  <Eye className="w-5 h-5" />
-                                  Reveal My Destiny
-                                </>
-                              )}
-                            </button>
-                          </div>
-                        )}
-
-                        <canvas ref={canvasRef} className="hidden" />
-                      </div>
-                    )}
-
-                    {error && (
-                      <div className="bg-red-950/30 border-2 border-red-500/40 rounded-2xl p-8 text-center backdrop-blur-sm">
-                        <div className="text-6xl mb-4">⚡</div>
-                        <p className="text-red-300 font-semibold mb-4">{error}</p>
-                        <button
-                          onClick={runAnalysis}
-                          className="bg-gradient-to-r from-red-600 to-pink-600 text-white px-6 py-2 rounded-xl hover:from-red-500 hover:to-pink-500 transition-all"
-                        >
-                          Retry Analysis
-                        </button>
-                      </div>
-                    )}
-
-                    {results && (
-                      <div className="space-y-6">
-                        <div className="bg-gradient-to-br from-purple-950/40 via-indigo-950/40 to-purple-950/40 border-2 border-purple-500/30 rounded-2xl p-8 backdrop-blur-sm">
-                          <h2 className="text-3xl font-serif text-center text-yellow-200 mb-6 flex items-center justify-center gap-2">
-                            <Sparkles className="w-6 h-6" />
-                            The Oracle's Decree
-                            <Sparkles className="w-6 h-6" />
-                          </h2>
-
-                          <div className="bg-purple-900/20 border-l-4 border-yellow-400 rounded-lg p-6 mb-6 italic text-purple-100 leading-relaxed">
-                            {results.mysticSummary}
-                          </div>
-
-                          <div className="bg-gradient-to-r from-yellow-900/20 to-amber-900/20 border-2 border-yellow-500/30 rounded-xl p-6 text-center mb-6">
-                            <h3 className="text-2xl font-bold text-yellow-200 mb-2">
-                              {results.destinyMatch?.archetype}
-                            </h3>
-                            <p className="text-purple-200">{results.destinyMatch?.meaning}</p>
-                          </div>
-
-                          <div className="grid grid-cols-2 gap-4 mb-6">
-                            {[
-                              { label: 'Color', value: results.luckyContext?.luckyColor },
-                              { label: 'Number', value: results.luckyContext?.luckyNumber },
-                              { label: 'Animal', value: results.luckyContext?.powerAnimal },
-                              { label: 'Action', value: results.luckyContext?.actionItem }
-                            ].map((item, i) => (
-                              <div key={i} className="bg-purple-900/30 border border-purple-500/30 rounded-xl p-4 text-center">
-                                <div className="text-purple-300 text-sm mb-1">{item.label}</div>
-                                <div className="text-purple-100 font-semibold">{item.value}</div>
-                              </div>
-                            ))}
-                          </div>
-
-                          <div className="space-y-3">
-                            {results.lines && Object.entries(results.lines).map(([key, value]) => (
-                              <div key={key} className="bg-black/20 border border-purple-500/20 rounded-xl p-4">
-                                <h4 className="text-purple-200 font-semibold mb-2 uppercase tracking-wide">
-                                  ✦ {key}
-                                </h4>
-                                <p className="text-purple-300/90 text-sm leading-relaxed">
-                                  {value.description}
-                                </p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="bg-gradient-to-br from-indigo-950/40 via-purple-950/40 to-indigo-950/40 border-2 border-purple-500/30 rounded-2xl p-8 backdrop-blur-sm">
-                          <h3 className="text-2xl font-serif text-center text-purple-200 mb-6">
-                            Ask the Oracle
-                          </h3>
-                          
-                          <div ref={chatBoxRef} className="bg-black/30 border border-purple-500/30 rounded-xl p-4 h-64 overflow-y-auto mb-4 space-y-3">
-                            {chatMessages.map((msg, i) => (
-                              <div
-                                key={i}
-                                className={`p-3 rounded-xl max-w-[85%] ${
-                                  msg.role === 'bot'
-                                    ? 'bg-purple-900/40 text-purple-100 mr-auto'
-                                    : 'bg-yellow-900/30 text-yellow-100 ml-auto'
-                                }`}
-                              >
-                                {msg.content}
-                              </div>
-                            ))}
-                          </div>
-
-                          <div className="flex gap-2">
-                            <input
-                              type="text"
-                              value={userInput}
-                              onChange={(e) => setUserInput(e.target.value)}
-                              onKeyPress={handleKeyPress}
-                              placeholder="Pose thy question..."
-                              className="flex-1 px-4 py-3 bg-black/30 border-2 border-purple-500/40 rounded-xl text-purple-100 placeholder-purple-400/50 focus:outline-none focus:border-purple-400 transition-all"
-                            />
-                            <button
-                              onClick={sendChat}
-                              className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-500 hover:to-pink-500 transition-all"
-                            >
-                              Send
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        }
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<WizPalm />);
-    </script>
+    function addMsg(role, content) {
+        const b = document.getElementById('chatBox');
+        const d = document.createElement('div');
+        d.className = `msg ${role}`; d.innerText = content;
+        b.appendChild(d); b.scrollTop = b.scrollHeight;
+    }
+    document.getElementById('userInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') sendChat(); });
+</script>
 </body>
 </html>
