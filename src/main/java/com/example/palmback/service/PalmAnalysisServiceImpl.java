@@ -2,20 +2,16 @@ package com.example.palmback.service;
 
 import com.example.palmback.dto.PalmAnalysisResponse;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.vectorstore.SearchRequest;
-import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.context.annotation.Primary;
-import org.springframework.ai.document.Document;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @Primary
 public class PalmAnalysisServiceImpl implements PalmAnalysisService {
@@ -30,8 +26,9 @@ public class PalmAnalysisServiceImpl implements PalmAnalysisService {
     }
 
     @Override
-    public PalmAnalysisResponse analyze(String requestId, MultipartFile image) {
+    public PalmAnalysisResponse analyze( MultipartFile image) {
         try {
+            log.info("분석시작");
             var imageResource = new InputStreamResource(image.getInputStream());
 
             String promptText = """

@@ -27,6 +27,6 @@ public class PalmController {
         if (image == null || image.isEmpty()) {
             throw new IllegalArgumentException("image is required");
         }
-        return palmAnalysisService.analyze(UUID.randomUUID().toString(), image);
+        return palmAnalysisService.analyze( image);
     }
 }
