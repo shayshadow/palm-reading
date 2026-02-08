@@ -36,7 +36,7 @@ We set out to explore the intersection of **human curiosity** and **digital prec
 
 ### Frontend
 - **React.js**  
-  Responsive, dynamic user experience with a high-fidelity **Glassmorphism UI**
+  Responsive, dynamic user experience with a high-fidelity **Antique UI**
 - **WebCam API**  
   Seamless real-time palm capture directly in the browser
 
