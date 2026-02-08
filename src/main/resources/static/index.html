@@ -28,6 +28,9 @@
             overflow-x: hidden;
         }
 
+        video, #palmCanvas {
+            transform: scaleX(-1);
+        }
         /* The Main Book Layout */
         .grimoire {
             background: #4a3728; /* Leather Binding */
@@ -299,9 +302,10 @@
 
     function updateUI() {
         const g = document.getElementById('genderSelect').value;
+        const joke = '<span style="font-size: 0.8rem; margin-left: 8px; font-weight: normal;">(The AI might say no! hehe ^^)</span>';
         document.getElementById('palmCard').style.display = 'block';
         document.getElementById('uploadBtns').style.display = 'grid';
-        document.getElementById('guideText').innerText = g === 'female' ? "◈ Present thy LEFT palm" : (g === 'male' ? "◈ Present thy RIGHT palm" : "◈ Present EITHER palm");
+        document.getElementById('guideText').innerHTML = g === 'female' ? "◈ Present thy LEFT palm" + joke: (g === 'male' ? "◈ Present thy RIGHT palm" +joke: "◈ Present EITHER palm");
     }
 
     async function startCamera() {
