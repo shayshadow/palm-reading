@@ -47,7 +47,7 @@ We set out to explore the intersection of **human curiosity** and **digital prec
   Structured prompt templates and clean orchestration with LLM/VLM models
 
 ### AI Core
-- **Google Gemini 2.5 Flash**
+- **Google Gemini Flash Latest**
   - **VLM (Vision)**: Palm line feature extraction  
   - **LLM (Chat)**: Persona-driven consultation as the Archmage
 
