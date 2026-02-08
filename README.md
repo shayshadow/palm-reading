@@ -10,9 +10,9 @@ By leveraging the visual intelligence of **Google Gemini (VLM)** and the orchest
 ## 👥 Team Palmystic
 	
   ```
-  •	Backend Architect: [Eunse]
-•	Frontend Sorcerers: [Tithi]
-  •	Prompt Engineer : [Cathy]
+  •	Backend Architect: [Eunse Jeong]
+•	Frontend Sorcerers: [Tithi Paul]
+  •	Prompt Engineer : [Cathy Pahn]
   ```
 
 ---
@@ -50,6 +50,16 @@ We set out to explore the intersection of **human curiosity** and **digital prec
 - **Google Gemini Flash Latest**
   - **VLM (Vision)**: Palm line feature extraction  
   - **LLM (Chat)**: Persona-driven consultation as the Archmage
+
+---
+
+
+## 📚 Credits & Frameworks
+
+- **Google Gemini API** — Vision-Language Model for palm image analysis and conversational AI  
+- **Spring AI** — Prompt orchestration and structured AI integration  
+- **Web MediaDevices API** — Browser-based camera access  
+- **HTML5 Canvas API** — Image capture and processing
 
 ---
 
@@ -102,6 +112,22 @@ Palmystic implements a **RAG (Retrieval-Augmented Generation) Lite** architectur
    Strict system prompting ensures:
    - The Archmage stays in character
    - Interpretations remain grounded in extracted palm features
+
+---
+
+## ⚔️ Challenges & How We Overcame Them
+
+- **Palm Image Validity**  
+  Palm readings are highly sensitive to image orientation, framing, and clarity.  
+  Instead of relying on brittle heuristics, we enforced strict validation rules at the **prompt level**, instructing the Gemini VLM to reject invalid inputs and return structured error responses.
+
+- **Browser Image Transmission**  
+  Camera-captured images initially failed to reach the backend correctly due to format mismatches.  
+  We resolved this by converting Canvas output into binary **Blob** objects and transmitting them via multipart form data, ensuring compatibility with Spring controllers.
+
+- **Persona Consistency**  
+  Maintaining a mystical yet structured AI persona required careful prompt engineering.  
+  We solved this with strict system prompts and schema-based outputs to balance creativity with reliability.
 
 ---
 
