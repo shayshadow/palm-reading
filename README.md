@@ -12,7 +12,7 @@ By leveraging the visual intelligence of **Google Gemini (VLM)** and the orchest
   ```
   •	Backend Architect: [Eunse Jeong]
 •	Frontend Sorcerers: [Tithi Paul]
-  •	Prompt Engineer : [Cathy Pahn]
+  •	Prompt Engineer : [Cathy Phan]
   ```
 
 ---
